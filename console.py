@@ -3,7 +3,7 @@
 import cmd
 import sys
 from models.base_model import BaseModel
-from models.__init__ import storage
+from models import storage
 from models.user import User
 from models.place import Place
 from models.state import State
@@ -19,10 +19,14 @@ class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
 
     classes = {
-               'BaseModel': BaseModel, 'User': User, 'Place': Place,
-               'State': State, 'City': City, 'Amenity': Amenity,
-               'Review': Review
-              }
+        'BaseModel': BaseModel,
+        'User': User,
+        'Place': Place,
+        'State': State,
+        'City': City,
+        'Amenity': Amenity,
+        'Review': Review
+    }
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
              'number_rooms': int, 'number_bathrooms': int,
@@ -127,20 +131,20 @@ class HBNBCommand(cmd.Cmd):
         kwargs = {}
         for arg in args[1:]:
             try:
-                key, value = arg.split('=')
+                key, value = arg.split('=', 1)
                 if value.startswith('"') and value.endswith('"'):
-                    value = value[1:1].replace('\\"', '"').replace('_', ' ')
+                    value = value[1:-1].replace('\\"', '"').replace('_', ' ')
                 elif '.' in value:
                     value = float(value)
                 else:
                     value = int(value)
+                kwargs[key] = value
             except ValueError:
                 pass
 
         new_instance = HBNBCommand.classes[class_name](**kwargs)
         new_instance.save()
         print(new_instance.id)
-        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -216,18 +220,19 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, args):
         """ Shows all objects, or all objects of a class"""
         print_list = []
+        args = args.split()
 
         if args:
-            args = args.split(' ')[0]  # remove possible trailing args
-            if args not in HBNBCommand.classes:
+            class_name = args[0]
+            if class_name not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
-                if k.split('.')[0] == args:
-                    print_list.append(str(v))
+            objs = storage.all(HBNBCommand.classes[class_name])
         else:
-            for k, v in storage._FileStorage__objects.items():
-                print_list.append(str(v))
+            objs = storage.all()
+
+        for obj in objs.values():
+            print_list.append(str(obj))
 
         print(print_list)
 
