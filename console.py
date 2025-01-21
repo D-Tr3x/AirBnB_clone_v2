@@ -119,10 +119,11 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        args = args.split()
         if not args:
             print("** class name missing **")
             return
+
+        args = args.split()
         class_name = args[0]
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
@@ -141,6 +142,10 @@ class HBNBCommand(cmd.Cmd):
                 kwargs[key] = value
             except ValueError:
                 pass
+        if class_name == "User":
+            if "email" not in kwargs or "password" not in kwargs:
+                print("** missing parameters **")
+                return
 
         new_instance = HBNBCommand.classes[class_name](**kwargs)
         new_instance.save()
@@ -219,8 +224,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, args):
         """ Shows all objects, or all objects of a class"""
-        print_list = []
         args = args.split()
+        print_list = []
 
         if args:
             class_name = args[0]
