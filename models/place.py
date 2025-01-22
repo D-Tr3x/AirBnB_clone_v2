@@ -2,8 +2,24 @@
 """ Place Module for HBNB project """
 from os import getenv
 from models.base_model import Base, BaseModel
-from sqlalchemy import Column, String, Integer, Float, ForeignKey
+from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
+
+
+place_amenity = Table(
+    "place_amenity",
+    Base.metadata,
+    Column("place_id",
+           String(60),
+           ForeignKey("places.id"),
+           primary_key=True,
+           nullable=False),
+    Column("amenity_id",
+           String(60),
+           ForeignKey("amenities.id"),
+           primary_key=True,
+           nullable=False)
+)
 
 
 class Place(BaseModel, Base):
@@ -21,6 +37,8 @@ class Place(BaseModel, Base):
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
     reviews = relationship("Review", backref="place", cascade="delete")
+    amenities = relationship("Amenity", secondary="place_amenity",
+                             viewonly=False, overlaps="place_amenities")
 
     amenity_ids = []
 
@@ -35,3 +53,21 @@ class Place(BaseModel, Base):
                 if review.place_id == self.id:
                     place_reviews.append(review)
             return place_reviews
+
+        @property
+        def amenities(self):
+            """ Getter attribute that returns a list of Amenity """
+            from models import storage
+            all_amenities = storage.all(Amenity)
+            amenity_list = []
+            for amenity in all_amenities.values():
+                if amenity.id in self.amenity_ids:
+                    amenity_list.append(amenity)
+            return amenity_list
+
+        @amenities.setter
+        def amenities(self, obj):
+            """ Setter for amenities, adds Amenity.id to amenity_ids """
+            from models.amenity import Amenity
+            if isinstance(obj, Amenity):
+                self.amenity_ids.append(value.id)

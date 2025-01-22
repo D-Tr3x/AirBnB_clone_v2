@@ -38,7 +38,7 @@ class DBStorage:
         If cls is None, query all types of objects
 
         Return:
-           dictionary of objects in format <class-name>.<object-id> = obj
+            dictionary of objects in format <class-name>.<object-id> = obj
         """
         my_dict = {}
         classes = [User, State, City, Amenity, Place, Review]
@@ -48,13 +48,13 @@ class DBStorage:
                 query = self.__session.query(cls).all()
                 for obj in query:
                     key = f"{type(obj).__name__}.{obj.id}"
-                    my_dict[key] = obj
+                    my_dict[key] = obj.to_dict()
         else:
             if cls in classes:
                 query = self.__session.query(cls)
                 for obj in query:
                     key = f"{type(obj).__name__}.{obj.id}"
-                    my_dict[key] = obj
+                    my_dict[key] = obj.to_dict()
 
         return my_dict
 
