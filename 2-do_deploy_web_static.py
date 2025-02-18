@@ -31,21 +31,17 @@ def do_deploy(archive_path):
         put(archive_path, f'/tmp/{filename}')
 
         run(f'rm -rf /data/web_static/releases/{folder_name}')
-
         run(f'mkdir -p /data/web_static/releases/{folder_name}/')
         run('tar -xzf /tmp/{} -C /data/web_static/releases/{}/'
             .format(filename, folder_name))
-
         run(f'rm /tmp/{filename}')
         run('mv /data/web_static/releases/{}/web_static/* '
             '/data/web_static/releases/{}/'.format(folder_name, folder_name))
-
         run(f'rm -rf /data/web_static/releases/{folder_name}/web_static')
-
-
         run(f'rm -rf /data/web_static/current')
         run('ln -s /data/web_static/releases/{}/ /data/web_static/current'
             .format(folder_name))
+
         return True
     except Exception as e:
         return False
