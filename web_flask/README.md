@@ -7,3 +7,4 @@ Web framework is
 - 0. Hello Flask!
 - 1. HBNB
 - 2. C is fun!
+- 3. Python is cool!
