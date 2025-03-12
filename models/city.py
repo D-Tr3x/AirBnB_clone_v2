@@ -12,6 +12,11 @@ if getenv("HBNB_TYPE_STORAGE") == "db":
     class City(BaseModel, Base):
         """ The city class for DB storage, contains state ID and name """
         __tablename__ = 'cities'
+        __table_args__ = {
+            'mysql_engine': 'InnoDB',
+            'mysql_charset': 'latin1',
+            'mysql_collate': 'latin1_swedish_ci'
+        }
 
         id = Column(String(60), primary_key=True, nullable=False)
         state_id = Column(String(60), ForeignKey('states.id'), nullable=False)

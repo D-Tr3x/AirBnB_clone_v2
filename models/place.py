@@ -14,12 +14,21 @@ if getenv("HBNB_TYPE_STORAGE") == "db":
         Column("place_id", String(60), ForeignKey("places.id"),
                primary_key=True, nullable=False),
         Column("amenity_id", String(60), ForeignKey("amenities.id"),
-               primary_key=True, nullable=False)
+               primary_key=True, nullable=False),
+        mysql_engine='InnoDB',
+        mysql_charset='latin1',
+        mysql_collate='latin1_swedish_ci'
     )
 
     class Place(BaseModel, Base):
         """Represents a Place for the MySQL database"""
         __tablename__ = "places"
+        __table_args__ = {
+            'mysql_engine': 'InnoDB',
+            'mysql_charset': 'latin1',
+            'mysql_collate': 'latin1_swedish_ci'
+        }
+
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
         name = Column(String(128), nullable=False)

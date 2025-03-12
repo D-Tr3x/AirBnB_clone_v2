@@ -12,6 +12,12 @@ if getenv("HBNB_TYPE_STORAGE") == "db":
     class User(BaseModel, Base):
         """Represents a user for HBNB in MySQL database"""
         __tablename__ = "users"
+        __table_args__ = {
+            'mysql_engine': 'InnoDB',
+            'mysql_charset': 'latin1',
+            'mysql_collate': 'latin1_swedish_ci'
+        }
+
 
         email = Column(String(128), nullable=False)
         password = Column(String(128), nullable=False)

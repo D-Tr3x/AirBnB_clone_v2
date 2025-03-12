@@ -12,6 +12,12 @@ if getenv("HBNB_TYPE_STORAGE") == "db":
     class State(BaseModel, Base):
         """ State class for DB storage """
         __tablename__ = 'states'
+        __table_args__ = {
+            'mysql_engine': 'InnoDB',
+            'mysql_charset': 'latin1',
+            'mysql_collate': 'latin1_swedish_ci'
+        }
+
         name = Column(String(128), nullable=False)
         cities = relationship('City', backref='state', cascade='delete')
 else:

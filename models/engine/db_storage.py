@@ -44,14 +44,16 @@ class DBStorage:
         classes = [User, State, City, Amenity, Place, Review]
 
         if cls is None:
-            for cls in classes:
-                query = self.__session.query(cls).all()
+            for cl in classes:
+                query = self.__session.query(cl).all()
+                print(f"DEBUG: Query for {cl.__name__} returned {len(query)} objects")
                 for obj in query:
                     key = f"{type(obj).__name__}.{obj.id}"
                     my_dict[key] = obj.to_dict()
         else:
             if cls in classes:
-                query = self.__session.query(cls)
+                query = self.__session.query(cls).all()
+                print(f"DEBUG: Query for {cls.__name__} returned {len(query)} objects")
                 for obj in query:
                     key = f"{type(obj).__name__}.{obj.id}"
                     my_dict[key] = obj.to_dict()
@@ -77,10 +79,10 @@ class DBStorage:
         session_factory = sessionmaker(bind=self.__engine,
                                        expire_on_commit=False)
         Session = scoped_session(session_factory)
-        self.__session = Session
+        self.__session = Session()
 
     def close(self):
         """
         Calls remove() on the private session attr to close the current session
         """
-        self.__session.remove()
+        self.__session.close()
