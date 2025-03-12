@@ -11,3 +11,6 @@ Web framework is
 - 4. Is it a number?
 - 5. Number template
 - 6. Odd or even?
+- 7. Improve engines
+- 8. List of states
+- 9. Cities by states
